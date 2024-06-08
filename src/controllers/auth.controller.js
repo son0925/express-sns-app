@@ -4,6 +4,8 @@ const passport = require('passport');
 
 
 
+
+
 // 회원가입
 const signupUser = async (req,res) => {
   // 정보 확인
@@ -24,7 +26,7 @@ const signupUser = async (req,res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   const user = new User({
-    email, 
+    email: email.toLowerCase(), 
     password: hashedPassword
   });
 
@@ -38,9 +40,23 @@ const signupUser = async (req,res) => {
   }
 }
 
-// 로그인
-const localLoginoginUser = async (req,res) => {
-  
+// 로컬 로그인
+const localLoginoginUser = (req,res,next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.json({msg: info})
+    }
+    // 로그인
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect('/');
+    })
+  })(req,res,next)
 }
 
 

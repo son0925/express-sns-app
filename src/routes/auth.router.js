@@ -7,7 +7,7 @@ const authRouter = express.Router();
 
 
 authRouter.post('/signup', signupUser);
-authRouter.post('/login', localLoginoginUser)
+authRouter.post('/login', localLoginoginUser);
 
 
 

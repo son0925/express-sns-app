@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
 const userSchema = mongoose.Schema({
   email: {
     type: String,
@@ -16,6 +18,14 @@ const userSchema = mongoose.Schema({
   }
 })
 
+userSchema.methods.comparePassword = function(plainPassword, cb) {
+  bcrypt.compare(plainPassword, this.password, (err, isMatch) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, isMatch);
+  })
+};
 
 const User = mongoose.model('SNSUser', userSchema);
 
