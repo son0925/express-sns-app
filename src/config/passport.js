@@ -2,6 +2,7 @@
 const passport = require('passport');
 const User = require('../models/users.model');
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 
 // 로컬전략은 회원 유저 정보를 확인하고 검사하고 보내주는 미들웨어 역할이다
@@ -30,6 +31,38 @@ passport.use('local',new LocalStrategy({usernameField: 'email', passwordField: '
 
   }
 ))
+
+
+// google Strategy Setting
+const googleClientID = process.env.googleClientID;
+const googleClientSecret = process.env.googleClientSecret;
+const googleStrategyConfig = new GoogleStrategy({
+  clientID: googleClientID,
+  clientSecret: googleClientSecret,
+  callbackURL: '/auth/google/callback',
+  scope: ['email', 'profile']
+}, async (accessToken, refreshToken, profile, done) => {
+  const exUser = await User.findOne({googleId: profile.id});
+  if (exUser) {
+    return done(null, exUser);
+  }
+  else {
+    const user = new User({
+      email: profile.emails[0].value,
+      googleId: profile.id
+    });
+    try {
+      await user.save();
+      return done(null, user)
+    } catch (error) {
+      return done(error);
+    }
+  }
+})
+
+
+// Google LogIn
+passport.use('google', googleStrategyConfig)
 
 // 로그인을 했을 때 세션을 생성하고 저장한다
 // 서버에는 세션 데이터가 클라이언트에게는 세션 식별자를 저장한다

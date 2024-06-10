@@ -27,6 +27,7 @@ userSchema.methods.comparePassword = function(plainPassword, cb) {
   })
 };
 
+
 const User = mongoose.model('SNSUser', userSchema);
 
 

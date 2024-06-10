@@ -30,9 +30,6 @@ app.use(session({
   resave: false,
   // 초기화되지 않은 세션을 저장할지 여부
   saveUninitialized: true,
-  // 세션 데이터를 저장하는 장소 db, memory등이 있다
-  // store: new MemoryStore({ checkPeriod: 1000 * 60 * 30}),
-  // 쿠키가 없다면 세션도 없다 쿠키 옵션 설정
   cookie: {
     // 기간 ms단위이기 때문에 1000을 곱하고 시작
     maxAge: 1000 * 60 * 30,
@@ -40,12 +37,6 @@ app.use(session({
     httpOnly: true,
   }
 }))
-// 쿠키 세션
-// Cookie Encryption key
-// const cookieEncryptionKey = process.env.cookieSessionKey || 'key';
-// app.use(cookieSession({
-//   keys: [cookieEncryptionKey]
-// }))
 
 
 // view Engine SetUp
@@ -59,7 +50,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 
 // 서버 미들웨어
-app.use(passport.initialize());           // passport 초기화, req객체에 passport 메서드 추가
+app.use(passport.initialize());// passport 초기화, req객체에 passport 메서드 추가
 app.use(passport.session());
 require('./config/passport');
 
