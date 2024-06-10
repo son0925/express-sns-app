@@ -6,8 +6,12 @@ const authRouter = require('./routes/auth.router');
 const mainRouter = require('./routes/main.router');
 const passport = require('passport');
 const session = require('express-session');
-const MemoryStore = require('session-memory-store')(session);
+const cookieSession = require('cookie-session');
+// const MemoryStore = require('session-memory-store')(session);
 require('dotenv').config();
+
+
+
 
 
 // 클라이언트의 요청 header가 application/json 일 때 실행되는 미들웨어이다
@@ -21,13 +25,13 @@ app.use(express.urlencoded({ extended: false }));
 // 세션 정보 생성
 app.use(session({
   // 세션 데이터의 무결성을 위한 키
-  secret: 'Super Key',
+  secret: process.env.SESSION_SECRET_KEY,
   // 요청 처리 중 세션 데이터가 변경되지 않아도 세션을 다시 저장힐지 여부
   resave: false,
   // 초기화되지 않은 세션을 저장할지 여부
   saveUninitialized: true,
   // 세션 데이터를 저장하는 장소 db, memory등이 있다
-  store: new MemoryStore({ checkPeriod: 1000 * 60 * 30}),
+  // store: new MemoryStore({ checkPeriod: 1000 * 60 * 30}),
   // 쿠키가 없다면 세션도 없다 쿠키 옵션 설정
   cookie: {
     // 기간 ms단위이기 때문에 1000을 곱하고 시작
@@ -36,6 +40,12 @@ app.use(session({
     httpOnly: true,
   }
 }))
+// 쿠키 세션
+// Cookie Encryption key
+// const cookieEncryptionKey = process.env.cookieSessionKey || 'key';
+// app.use(cookieSession({
+//   keys: [cookieEncryptionKey]
+// }))
 
 
 // view Engine SetUp
@@ -49,8 +59,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 
 // 서버 미들웨어
+app.use(passport.initialize());           // passport 초기화, req객체에 passport 메서드 추가
 app.use(passport.session());
-app.use(passport.initialize());
 require('./config/passport');
 
 

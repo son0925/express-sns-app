@@ -60,6 +60,28 @@ const localLoginoginUser = (req,res,next) => {
 }
 
 
+// 로그아웃
+const logoutUser = (req,res) => {
+  req.logout();
+  req.redirect('/login');
+}
+
+
+
+// 로그인을 했는지
+const isLoginned = (req,res,next) => {
+  
+}
+
+// 로그인을 안했는지
+const isNotLoginned = (req,res,next) => {
+
+}
+
+
+// 로그인이 안됐는지
+
+
 
 
 
@@ -67,4 +89,7 @@ const localLoginoginUser = (req,res,next) => {
 module.exports = {
   signupUser,
   localLoginoginUser,
+  logoutUser,
+  isLoginned,
+  isNotLoginned
 }
