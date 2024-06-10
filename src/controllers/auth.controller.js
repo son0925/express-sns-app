@@ -70,12 +70,18 @@ const logoutUser = (req,res) => {
 
 // 로그인을 했는지
 const isLoginned = (req,res,next) => {
-  
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.redirect('/login')
 }
 
 // 로그인을 안했는지
 const isNotLoginned = (req,res,next) => {
-
+  if (!req.isAuthenticated()) {
+    return next();
+  }
+  return res.redirect('/');
 }
 
 

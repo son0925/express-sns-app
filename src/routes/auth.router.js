@@ -1,13 +1,13 @@
 const express = require('express');
-const { signupUser, localLoginoginUser } = require('../controllers/auth.controller');
+const { signupUser, localLoginoginUser, isNotLoginned } = require('../controllers/auth.controller');
 
 const authRouter = express.Router();
 
 
 
 
-authRouter.post('/signup', signupUser);
-authRouter.post('/login', localLoginoginUser);
+authRouter.post('/signup',isNotLoginned, signupUser);
+authRouter.post('/login',isNotLoginned, localLoginoginUser);
 
 
 
